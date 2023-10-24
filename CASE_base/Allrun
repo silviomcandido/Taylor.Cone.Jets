@@ -1,0 +1,84 @@
+#!/bin/bash
+##################################################################################
+############    	AUTOMATIC AXISSYMMETRIC MESH GENERATION 		  ############
+##################################################################################
+echo "CLEAR directory ....."
+rm -r 0
+rm -r log.*
+rm -r postProcessing
+
+#------------------------------------------------------------------------------
+echo -e "\n
+START mesh generation .....
+-------------------------------------------------------------------------------
+"
+#------------------------------------------------------------------------------
+echo -e "   - Create background mesh"
+cp -r 0.org 0
+echo -e "     > Run .m4 files"
+m4 ./CASE/blockMeshDict.m4 > ./system/blockMeshDict
+m4 ./CASE/setFieldsDict.m4 > ./system/setFieldsDict
+#------------------------------------------------------------------------------
+echo -e "     > Create mesh with blockMesh"
+blockMesh > log.meshing
+#------------------------------------------------------------------------------
+echo -e "   - Refine mesh"
+#------------------------------------------------------------------------------
+topoSet -dict system/refine/topoSetDict1 					>> log.meshing
+refineMesh -dict system/refine/refineMeshDict1 -overwrite 	>> log.meshing
+#------------------------------------------------------------------------------
+topoSet -dict system/refine/topoSetDict2 					>> log.meshing
+refineMesh -dict system/refine/refineMeshDict2 -overwrite 	>> log.meshing
+#------------------------------------------------------------------------------
+topoSet -dict system/refine/topoSetDict3 					>> log.meshing
+refineMesh -dict system/refine/refineMeshDict3 -overwrite 	>> log.meshing
+#------------------------------------------------------------------------------
+#topoSet -dict system/refine/topoSetDict4 					>> log.meshing
+#refineMesh -dict system/refine/refineMeshDict4 -overwrite 	>> log.meshing
+#------------------------------------------------------------------------------
+#topoSet -dict system/refine/topoSetDict5 					>> log.meshing
+#refineMesh -dict system/refine/refineMeshDict5 -overwrite 	>> log.meshing
+#------------------------------------------------------------------------------
+echo -e "     > Transform in axissymmetric"
+wedgePlease -angle 5 		>> log.meshing
+collapseEdges -overwrite 	>> log.meshing
+#------------------------------------------------------------------------------
+echo -e "     > Change boundaries"
+foamDictionary constant/polyMesh/boundary -entry entry0.wedge_pos.type -set wedge  >> log.meshing
+foamDictionary constant/polyMesh/boundary -entry entry0.wedge_neg.type -set wedge  >> log.meshing
+createPatch -overwrite >> log.meshing
+#------------------------------------------------------------------------------
+echo -e "   - Define plane to postprocessing droplets"
+topoSet -dict system/topoSetDict.post >> log.meshing
+#------------------------------------------------------------------------------
+echo -e "   - Set initial field" 
+setFields >> log.meshing
+checkMesh 					>> log.meshing
+#------------------------------------------------------------------------------
+echo -e "\n
+-------------------------------------------------------------------------------
+End Meshing\n\n"
+
+#-------------------------------------------------------------------------------
+echo -e "\n
+Setting Inlet velocity and Electric Field .....
+-------------------------------------------------------------------------------"
+#foamDictionary 0/U -entry boundaryField.inlet.value -set 'uniform (0 -7.015e-3 0)'
+#foamDictionary 0/Ue -entry boundaryField.wallInlet.value -set 'uniform 6900'
+#-------------------------------------------------------------------------------
+echo -e " - Setting Phase1 (liquid inlet liquid) Properties ....."
+foamDictionary constant/transportProperties -entry water.nu -set 	'0.570e-6'
+foamDictionary constant/transportProperties -entry water.rho -set 	'685'
+foamDictionary constant/transportProperties -entry water.sgm -set 	'4.5e-6'
+foamDictionary constant/transportProperties -entry water.eps -set 	'16.815e-12'
+foamDictionary constant/transportProperties -entry sigma -set 		'21.0e-3'
+
+#------------------------------------------------------------------------------
+
+echo -e "   - Extract initial time ....."
+foamToVTK -time 0 				>> log.pre
+interFoamEHD -postProcess -time 0 	>> log.pre
+
+echo -e "
+-------------------------------------------------------------------------------
+END! \n\n"

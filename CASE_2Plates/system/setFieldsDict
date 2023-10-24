@@ -1,0 +1,67 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// MACROS FOR CASE DEFINITION FOR GRID CONSTRUCTIONS
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+// Units are in mm
+   // Height (from tip nozzle to ground plate)
+   // Lenght nozzle
+   // Farfield / Plane size
+   // Nozzle Inner Diameter
+   // Nozzle Outer Diameter
+   // Outlet Dimension
+   // Outlet Dimension
+   // Height (from tip nozzle to ground plate)
+   // Height (from tip nozzle to ground plate)
+ 	// Apperture of refiment region
+      	// (0 = do the symmetry plane) (1 = no symmetry plane)
+  	// Refinement Level
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+defaultFieldValues
+(
+    volScalarFieldValue alpha.water 0
+);
+
+regions
+(
+  cylinderToCell
+  {
+      p1 (0 -0 0); //Min
+      p2 (0 0.001 0); //Max
+      radius 0.00035;
+
+     fieldValues
+      (
+           volScalarFieldValue alpha.water 1
+		   volVectorFieldValue U (0 -13e-3 0)
+       );
+  }
+	sphereToCell
+	{
+		centre          (0 0 0);
+		radius          0.00035;
+		fieldValues
+		(
+           volScalarFieldValue alpha.water 1
+		);
+	}
+ );
+

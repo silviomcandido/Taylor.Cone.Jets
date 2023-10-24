@@ -1,0 +1,62 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      ecurrent;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+	
+    Ie1
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        writeControl     timeStep;
+        writeInterval    1;
+        log             yes;
+        writeFields     no;
+        regionType      patch;
+        name            out;
+        operation       average;
+
+        fields
+        (
+            rhoE
+        );
+    }
+
+
+    fluxU
+    {
+		type            surfaceFieldValue;
+		libs            (fieldFunctionObjects);
+
+        enabled          true;
+        writeControl     timeStep;
+        writeInterval    1;
+        writeFields      false;
+
+        name I2;
+
+        regionType patch;
+
+		name out;
+
+        operation    areaNormalIntegrate;
+        fields
+        (
+            U
+        );
+    }
+
+
+// ************************************************************************* //
