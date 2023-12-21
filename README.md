@@ -7,7 +7,7 @@ Overview
 + Template case for Full 3D EHD jet flow
 + The main purpose of this template is to demonstrate a simple, reliable meshing
   strategy for axisymmetric flow
-+ These templates are intended to run with the solver interFoamEHD and interIsoFoamEHD developed by S. Cândido, if interested on the model please contact me :)
++ These templates are intended to run with the solver interFoamEHD and interIsoFoamEHD developed by S. Cândido, if interested in the model please feel free to contact me!
 
 Meshing of the 2D Axisymmetric
 =======
