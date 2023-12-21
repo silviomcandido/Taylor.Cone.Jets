@@ -28,7 +28,7 @@ Output
 + Graph data of field values along the centreline are written to files in
   postProcessing/graph
 
-Output
+Cite
 ======
 + 2D Axisymmetric
   + S. Cândido, J. C. Páscoa, On modal decomposition as surrogate for charge-conservative EHD modelling of Taylor Cone jets, International Journal of Engineering Science, 2023. https://doi.org/10.1016/j.ijengsci.2023.103947
