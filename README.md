@@ -1,4 +1,4 @@
-# axis2D.TaylorCone
+# TaylorConeJet
 Automated script using .m4 files to generate a 2D axis-symmetric or Full 3D simulation of a Taylor Cone Jet
 
 Overview
